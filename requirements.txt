@@ -1,0 +1,4 @@
+﻿hyperon
+pytest
+streamlit
+pydantic
