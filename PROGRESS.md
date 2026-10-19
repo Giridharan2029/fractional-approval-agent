@@ -255,11 +255,14 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 
 ### 7. Branch Lifecycle Guide, Shared Proof Contract & Teammate Prompts (Stage 3 & 4: VERIFIED)
 - **Branch Lifecycle Documentation (`docs/BRANCHES.md`):**
-  - Formulates strict isolation boundaries, allowed/forbidden files, testing procedures, and merge sequence for merged, active, and planned branches (`agent/2.4-audit-log`, `parser/3.1-rule-parser`, `agent/2.5-override-wiring`, `ui/6.1-dashboard`, `docs/7.3-readme-disclosure`).
-- **Canonical Proof Contract (`docs/PROOF_SHAPE.md`):**
-  - Specifies shared JSON schema with integer minor units (cents), proof fields (`gross`, `fee`, `artist`, `community`, `dust`, `pool`, `coowners`), conservation equation assertion, and complete reason code reference (`BELOW_RESERVE`, `OVERRIDE_BELOW_FLOOR`, `OVERRIDE_NOT_ALLOWED`, `ARTWORK_CONTESTED`, `UNSUPPORTED_CURRENCY`, `DUPLICATE_NONCE`, `FAILED_CLOSED`, `INVALID_AMOUNT`, `AMOUNT_ABOVE_CAP`, `CAP_TABLE_INVALID`).
+  - Formulates strict isolation boundaries, allowed/forbidden files, testing procedures, and merge sequence for merged, active, and planned branches (`metta/1.4-bridge-hardening`, `agent/2.4-audit-log`, `parser/3.1-rule-parser`, `agent/2.5-override-wiring`, `ui/6.1-dashboard`, `docs/7.3-readme-disclosure`).
+  - Merge order defined: `metta/1.4-bridge-hardening` merges first, followed by `docs/7.0-branch-guide`.
+- **Canonical Proof Contract & Unified Reason Codes (`docs/PROOF_SHAPE.md`):**
+  - Specifies shared JSON schema with integer minor units (cents), proof fields (`gross`, `fee`, `artist`, `community`, `dust`, `pool`, `coowners`), conservation equation assertion, and unified reason code reference:
+    `BELOW_RESERVE`, `OVERRIDE_BELOW_FLOOR`, `OVERRIDE_NOT_ALLOWED`, `ARTWORK_CONTESTED`, `UNSUPPORTED_CURRENCY`, `DUPLICATE_NONCE`, `ENGINE_UNAVAILABLE`, `LLM_MALFORMED_OUTPUT`, `INVALID_AMOUNT`, `AMOUNT_ABOVE_CAP`, `CAP_TABLE_INVALID`, `ARTWORK_FLAGGED`.
+  - Harmonized `ENGINE_UNAVAILABLE` across `PROOF_SHAPE.md`, `tests/oracle.py`, scenario definitions, and fixtures (replacing legacy `FAILED_CLOSED`).
 - **Real Bridge Proof Fixtures (`tests/fixtures/proofs/*.json`):**
-  - Generated canonical fixture files for all 9 scenarios (`SC-01` through `SC-09`) directly by executing the real `agent/bridge.py` and `hyperon` runtime.
+  - Generated canonical fixture files for all 9 scenarios (`SC-01` through `SC-09`) directly by executing the real `agent/bridge.py` and `hyperon` runtime, labeled with producing layer annotations (`bridge/MeTTa`, `audit_log`, `bridge_fail_closed`, `parser`).
 - **Teammate Implementation Prompts (`docs/TEAM_PROMPTS.md`):**
   - 4 copy-paste prompts configured with strict rules, branch targets, test contracts, and scope boundaries for:
     1. `agent/2.4-audit-log`: append-only, SHA-256 hash-chained log with idempotency.

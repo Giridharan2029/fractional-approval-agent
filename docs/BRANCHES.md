@@ -24,6 +24,7 @@ Per `AGENTS.md`:
 | `spike/metta-omega-integration` | **Merged** (PR #1) | `main` | Lead | Hyperon MeTTa adapter spike & Omega live container verification. |
 | `data/0.3-synthetic-registry` | **Merged** | `main` | Lead | Synthetic artwork catalog, test oracle, scenarios SC-01 to SC-09. |
 | `metta/1.3-settlement-rule` | **Merged** | `data/0.3-synthetic-registry` | Lead | Pure MeTTa settlement rules, direct assertion tests, Atom API bridge. |
+| `metta/1.4-bridge-hardening` | **Active** | `main` | Lead | Bridge argument hardening (rejects parens, quotes, whitespace, nested expressions) and native Hyperon Atom API fact generation. |
 | `docs/7.0-branch-guide` | **Active** | `main` | Lead | Branch guide, proof contract, fixtures, and teammate prompt specifications. |
 | `agent/2.4-audit-log` | **Planned** | `main` | Teammate | Append-only, hash-chained audit log with idempotency/nonce check. |
 | `parser/3.1-rule-parser` | **Planned** | `main` | Teammate | Deterministic rule-based bid parser ("12k" -> integer cents) with injection defense. |
@@ -54,15 +55,25 @@ Per `AGENTS.md`:
 
 ---
 
-### B. Active Branch
+### B. Active Branches
 
-#### 4. `docs/7.0-branch-guide`
+#### 4. `metta/1.4-bridge-hardening`
+- **Purpose:** Hardens the Hyperon/MeTTa adapter against injection attempts and closes string-formatting vulnerabilities by building all fact atoms natively through the Hyperon Atom API.
+- **Base:** `main` @ `b3dd353`
+- **Files Touched:** `agent/bridge.py`, `tests/test_bridge_hardening.py`.
+- **How to Test:**
+  ```powershell
+  pytest tests/test_bridge_hardening.py -v
+  ```
+- **Merge Order:** Merges to `main` FIRST (before `docs/7.0-branch-guide`).
+
+#### 5. `docs/7.0-branch-guide`
 - **Purpose:** Author complete branch lifecycle documentation, proof contract, canonical proof fixtures, and teammate prompt specs.
 - **Base:** `main`
 - **Files Touched:** `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `tests/fixtures/proofs/*.json`, `docs/TEAM_PROMPTS.md`.
 - **Files Forbidden to Touch:** `agent/*`, `metta/*`, `data/*`.
 - **How to Test:** Verify markdown links, validate JSON fixtures with `json.load()`.
-- **Merge Order:** Merges to `main` immediately to unblock parallel workstreams.
+- **Merge Order:** Merges to `main` SECOND (immediately after `metta/1.4-bridge-hardening`).
 
 ---
 
@@ -133,22 +144,24 @@ Per `AGENTS.md`:
 
 ```mermaid
 graph TD
-    M1[main: b3dd353] --> B1[docs/7.0-branch-guide]
-    B1 --> M2[main with Docs & Fixtures]
+    M1[main: b3dd353] --> H1[metta/1.4-bridge-hardening]
+    H1 --> M2[main with Hardened Bridge]
+    M2 --> B1[docs/7.0-branch-guide]
+    B1 --> M3[main with Docs & Fixtures]
 
-    M2 --> P1[parser/3.1-rule-parser]
-    M2 --> A1[agent/2.4-audit-log]
-    M2 --> U1[ui/6.1-dashboard - Skeleton]
+    M3 --> P1[parser/3.1-rule-parser]
+    M3 --> A1[agent/2.4-audit-log]
+    M3 --> U1[ui/6.1-dashboard - Skeleton]
 
-    P1 --> M3[main with Parser]
-    A1 --> M4[main with Audit Log]
+    P1 --> M4[main with Parser]
+    A1 --> M5[main with Audit Log]
 
-    M4 --> O1[agent/2.5-override-wiring]
-    O1 --> M5[main with Core Engine Wired]
+    M5 --> O1[agent/2.5-override-wiring]
+    O1 --> M6[main with Core Engine Wired]
 
-    M5 --> U2[ui/6.1-dashboard - Full Integration]
-    U2 --> M6[main Feature Complete]
+    M6 --> U2[ui/6.1-dashboard - Full Integration]
+    U2 --> M7[main Feature Complete]
 
-    M6 --> D1[docs/7.3-readme-disclosure]
-    D1 --> M7[main Submission Freeze]
+    M7 --> D1[docs/7.3-readme-disclosure]
+    D1 --> M8[main Submission Freeze]
 ```

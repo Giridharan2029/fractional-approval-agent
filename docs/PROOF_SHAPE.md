@@ -123,7 +123,8 @@ The symbolic engine and bridge emit standard reason codes when rejecting a propo
 | `ARTWORK_CONTESTED` | Symbolic Rule | Artwork status is marked `CONTESTED` (e.g., active legal dispute or probate claim). |
 | `UNSUPPORTED_CURRENCY` | Symbolic Rule | Settlement currency does not match the artwork's registered reserve currency. |
 | `DUPLICATE_NONCE` | Gateway / Audit | Replay attack detected; transaction nonce has already been settled. |
-| `FAILED_CLOSED` | Engine Boundary | MeTTa engine returned empty atom set, unmapped entity, or syntax error; execution halted safely. |
+| `ENGINE_UNAVAILABLE` | Bridge Fail-Closed | MeTTa engine returned empty atom set, unmapped entity, timeout, or runtime error; execution halted safely. |
+| `LLM_MALFORMED_OUTPUT` | Parser / Intake | Natural language bid could not be deterministically parsed into valid transaction parameters, or LLM output is malformed. |
 | `INVALID_AMOUNT` | Input Validation | Gross amount is non-integer, negative, zero, or contains forbidden float/boolean types. |
 | `AMOUNT_ABOVE_CAP` | Policy Rule | Proposed gross exceeds maximum supported transaction cap ($10,000,000.00 / 1,000,000,000 cents). |
 | `CAP_TABLE_INVALID` | Policy Rule | Cap table shares do not sum to 10,000 bps or deductions equal/exceed 10,000 bps. |
@@ -144,5 +145,5 @@ Canonical proof fixtures generated via `scripts/generate_proof_fixtures.py` are 
 | `sc05_override_below_floor.json` | SC-05 | `bridge/MeTTa` | `REJECTED` | Override 500 bps < floor 1000 bps -> `OVERRIDE_BELOW_FLOOR`. |
 | `sc06_dust_split.json` | SC-06 | `bridge/MeTTa` | `APPROVED` | TEST-DUST gross 10,001¢; cap table 3333/3333/3334; dust 1¢ swept to community fund. |
 | `sc07_duplicate_nonce.json` | SC-07 | `audit_log` | `REJECTED` | Nonce already recorded in audit log; blocked at intake -> `DUPLICATE_NONCE`. |
-| `sc08_metta_unavailable.json` | SC-08 | `bridge_fail_closed` | `REJECTED` | Unknown entity / empty atom set returned by engine; fails closed -> `FAILED_CLOSED`. |
+| `sc08_metta_unavailable.json` | SC-08 | `bridge_fail_closed` | `REJECTED` | Unknown entity / empty atom set returned by engine; fails closed -> `ENGINE_UNAVAILABLE`. |
 | `sc09_llm_unavailable.json` | SC-09 | `parser` | `APPROVED` | Offline execution; deterministic parser extracts integer bid parameters without LLM. |

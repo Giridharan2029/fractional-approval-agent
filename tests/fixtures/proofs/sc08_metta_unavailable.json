@@ -1,6 +1,6 @@
 {
   "status": "REJECTED",
-  "reason_code": "FAILED_CLOSED",
+  "reason_code": "ENGINE_UNAVAILABLE",
   "artwork_id": "UNKNOWN-ARTWORK-999",
   "currency": "USD",
   "gross": 1000000,

@@ -62,7 +62,7 @@ def generate_fixture(scenario_file: Path):
         # SC-08: Unmapped entity - fails closed in bridge
         proof_data = {
             "status": "REJECTED",
-            "reason_code": "FAILED_CLOSED",
+            "reason_code": "ENGINE_UNAVAILABLE",
             "artwork_id": art_id,
             "currency": currency,
             "gross": gross,
