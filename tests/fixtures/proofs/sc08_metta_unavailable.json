@@ -10,5 +10,5 @@
   "dust": 0,
   "pool": 0,
   "coowners": [],
-  "source": "real-bridge-output (fail-closed)"
+  "producing_layer": "bridge_fail_closed"
 }

@@ -10,5 +10,5 @@
   "dust": 0,
   "pool": 0,
   "coowners": [],
-  "source": "real-bridge-output"
+  "producing_layer": "bridge/MeTTa"
 }

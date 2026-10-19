@@ -10,5 +10,5 @@
   "dust": 0,
   "pool": 0,
   "coowners": [],
-  "source": "bridge-verified (idempotency rejection)"
+  "producing_layer": "audit_log"
 }

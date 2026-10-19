@@ -16,5 +16,5 @@
       "amount": 510000
     }
   ],
-  "source": "real-bridge-output"
+  "producing_layer": "bridge/MeTTa"
 }
