@@ -1,0 +1,42 @@
+{
+  "scenario_id": "SC-06",
+  "name": "Dust Sweep to Community Fund (TEST-DUST)",
+  "description": "Gross sale of 10001 cents across 3333/3333/3334 cap table leaves 1 cent remainder sweep to community fund",
+  "input": {
+    "artwork_id": "TEST-DUST",
+    "gross_minor": 10001,
+    "currency": "USD",
+    "nonce": "nonce-sc06-446600"
+  },
+  "expected": {
+    "status": "APPROVED",
+    "gross_minor": 10001,
+    "platform_fee_minor": 0,
+    "net_minor": 10001,
+    "artist_royalty_minor": 0,
+    "community_cut_minor": 0,
+    "dust_minor": 1,
+    "community_total_minor": 1,
+    "co_owner_payouts": [
+      {
+        "owner": "holder_a",
+        "wallet": "0xholder_a",
+        "bps": 3333,
+        "amount_minor": 3333
+      },
+      {
+        "owner": "holder_b",
+        "wallet": "0xholder_b",
+        "bps": 3333,
+        "amount_minor": 3333
+      },
+      {
+        "owner": "holder_c",
+        "wallet": "0xholder_c",
+        "bps": 3334,
+        "amount_minor": 3334
+      }
+    ],
+    "conservation_invariant_satisfied": true
+  }
+}

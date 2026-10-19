@@ -1,0 +1,37 @@
+{
+  "scenario_id": "SC-09",
+  "name": "LLM Offline Fallback",
+  "description": "Performs full pipeline execution when LLM is unavailable or offline, using deterministic rule-based intake",
+  "input": {
+    "artwork_id": "HFA-101",
+    "gross_minor": 1000000,
+    "currency": "USD",
+    "nonce": "nonce-sc09-112233",
+    "offline_mode": true
+  },
+  "expected": {
+    "status": "APPROVED",
+    "gross_minor": 1000000,
+    "platform_fee_minor": 0,
+    "net_minor": 1000000,
+    "artist_royalty_minor": 150000,
+    "community_cut_minor": 30000,
+    "dust_minor": 0,
+    "community_total_minor": 30000,
+    "co_owner_payouts": [
+      {
+        "owner": "alice",
+        "wallet": "0xalice",
+        "bps": 6000,
+        "amount_minor": 492000
+      },
+      {
+        "owner": "bob",
+        "wallet": "0xbob",
+        "bps": 4000,
+        "amount_minor": 328000
+      }
+    ],
+    "conservation_invariant_satisfied": true
+  }
+}

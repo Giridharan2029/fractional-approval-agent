@@ -1,0 +1,22 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Guard - no decimal numbers in MeTTa (also avoid them in comments)
+        run: |
+          if grep -nE '[0-9]+\.[0-9]+' metta/*.metta; then echo "Decimal number found"; exit 1; fi
+      - name: Guard - no floats or silent errors in Python
+        run: |
+          if grep -rnE 'float\(|except:[[:space:]]*$|except Exception:[[:space:]]*pass' agent app 2>/dev/null; then echo "Forbidden pattern found"; exit 1; fi
+      - name: Python tests
+        run: pytest -q
