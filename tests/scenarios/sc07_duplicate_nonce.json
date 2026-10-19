@@ -1,0 +1,18 @@
+{
+  "scenario_id": "SC-07",
+  "name": "Duplicate Nonce / Replay Defense",
+  "description": "Attempted replay of an already-settled transaction nonce; rejected at the intake gateway to prevent double-spending",
+  "input": {
+    "artwork_id": "HFA-101",
+    "gross_minor": 1000000,
+    "currency": "USD",
+    "nonce": "nonce-sc01-998811"
+  },
+  "expected": {
+    "status": "REJECTED",
+    "rejection_code": "DUPLICATE_NONCE",
+    "rejection_reason": "Transaction nonce nonce-sc01-998811 has already been settled",
+    "gross_minor": 1000000,
+    "payouts_generated": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "scenario_id": "SC-08",
+  "name": "MeTTa Engine Failure / Fail-Closed",
+  "description": "MeTTa engine returns empty atom set, syntax error, or unmapped entity; agent fails closed with zero disbursed funds",
+  "input": {
+    "artwork_id": "UNKNOWN-ARTWORK-999",
+    "gross_minor": 1000000,
+    "currency": "USD",
+    "nonce": "nonce-sc08-337700"
+  },
+  "expected": {
+    "status": "REJECTED",
+    "rejection_code": "FAILED_CLOSED",
+    "rejection_reason": "No valid MeTTa proof returned for unknown or invalid artwork entity",
+    "gross_minor": 1000000,
+    "payouts_generated": false
+  }
+}

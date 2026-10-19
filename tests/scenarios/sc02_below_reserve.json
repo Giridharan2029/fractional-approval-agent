@@ -1,0 +1,18 @@
+{
+  "scenario_id": "SC-02",
+  "name": "Below Reserve Rejection (HFA-101)",
+  "description": "Attempted sale of HFA-101 for USD 2,000.00 (200,000 minor units), below reserve of USD 3,000.00 (300,000 minor units)",
+  "input": {
+    "artwork_id": "HFA-101",
+    "gross_minor": 200000,
+    "currency": "USD",
+    "nonce": "nonce-sc02-882200"
+  },
+  "expected": {
+    "status": "REJECTED",
+    "rejection_code": "BELOW_RESERVE",
+    "rejection_reason": "Gross 200000 is below reserve 300000",
+    "gross_minor": 200000,
+    "payouts_generated": false
+  }
+}

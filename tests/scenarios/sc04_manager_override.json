@@ -1,0 +1,46 @@
+{
+  "scenario_id": "SC-04",
+  "name": "Estate Manager Override Upward (HFA-103)",
+  "description": "Estate manager increases royalty by 200 bps (to 12%) with valid justification reason; verified through MeTTa override logic",
+  "input": {
+    "artwork_id": "HFA-103",
+    "gross_minor": 5000000,
+    "currency": "USD",
+    "nonce": "nonce-sc04-664400",
+    "override": {
+      "royalty_bps": 1200,
+      "reason": "Curator requested additional preservation allocation for Harlem archive"
+    }
+  },
+  "expected": {
+    "status": "APPROVED",
+    "gross_minor": 5000000,
+    "platform_fee_minor": 0,
+    "net_minor": 5000000,
+    "artist_royalty_minor": 600000,
+    "community_cut_minor": 250000,
+    "dust_minor": 0,
+    "community_total_minor": 250000,
+    "co_owner_payouts": [
+      {
+        "owner": "dave",
+        "wallet": "0xdave",
+        "bps": 5000,
+        "amount_minor": 2075000
+      },
+      {
+        "owner": "elena",
+        "wallet": "0xelena",
+        "bps": 3000,
+        "amount_minor": 1245000
+      },
+      {
+        "owner": "frank",
+        "wallet": "0xfrank",
+        "bps": 2000,
+        "amount_minor": 830000
+      }
+    ],
+    "conservation_invariant_satisfied": true
+  }
+}

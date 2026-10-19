@@ -1,0 +1,22 @@
+{
+  "scenario_id": "SC-05",
+  "name": "Override Below Floor Rejection (HFA-101)",
+  "description": "Attempted override to reduce artist royalty to 500 bps, which is below the floor of 1000 bps",
+  "input": {
+    "artwork_id": "HFA-101",
+    "gross_minor": 1000000,
+    "currency": "USD",
+    "nonce": "nonce-sc05-555500",
+    "override": {
+      "royalty_bps": 500,
+      "reason": "Attempting unauthorized discount below statutory floor"
+    }
+  },
+  "expected": {
+    "status": "REJECTED",
+    "rejection_code": "OVERRIDE_BELOW_FLOOR",
+    "rejection_reason": "Override 500 is below floor 1000",
+    "gross_minor": 1000000,
+    "payouts_generated": false
+  }
+}
