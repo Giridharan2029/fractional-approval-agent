@@ -242,12 +242,32 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 
 ---
 
+### 7. Branch Lifecycle Guide, Shared Proof Contract & Teammate Prompts (Stage 3 & 4: VERIFIED)
+- **Branch Lifecycle Documentation (`docs/BRANCHES.md`):**
+  - Formulates strict isolation boundaries, allowed/forbidden files, testing procedures, and merge sequence for merged, active, and planned branches (`agent/2.4-audit-log`, `parser/3.1-rule-parser`, `agent/2.5-override-wiring`, `ui/6.1-dashboard`, `docs/7.3-readme-disclosure`).
+- **Canonical Proof Contract (`docs/PROOF_SHAPE.md`):**
+  - Specifies shared JSON schema with integer minor units (cents), proof fields (`gross`, `fee`, `artist`, `community`, `dust`, `pool`, `coowners`), conservation equation assertion, and complete reason code reference (`BELOW_RESERVE`, `OVERRIDE_BELOW_FLOOR`, `OVERRIDE_NOT_ALLOWED`, `ARTWORK_CONTESTED`, `UNSUPPORTED_CURRENCY`, `DUPLICATE_NONCE`, `FAILED_CLOSED`, `INVALID_AMOUNT`, `AMOUNT_ABOVE_CAP`, `CAP_TABLE_INVALID`).
+- **Real Bridge Proof Fixtures (`tests/fixtures/proofs/*.json`):**
+  - Generated canonical fixture files for all 9 scenarios (`SC-01` through `SC-09`) directly by executing the real `agent/bridge.py` and `hyperon` runtime.
+- **Teammate Implementation Prompts (`docs/TEAM_PROMPTS.md`):**
+  - 4 copy-paste prompts configured with strict rules, branch targets, test contracts, and scope boundaries for:
+    1. `agent/2.4-audit-log`: append-only, SHA-256 hash-chained log with idempotency.
+    2. `parser/3.1-rule-parser`: rule-based bid parser with adversarial injection defense.
+    3. `ui/6.1-dashboard`: Streamlit multi-page interface reading proof fixtures.
+    4. `docs/7.3-readme-disclosure`: final README, proposal notice, architecture map, and AI disclosure.
+
+---
+
 ## Next Steps & Roadmap
 
-1. **Manager Override & Glass-Box Audit Trail (`agent/audit.py`, `agent/override.py`):**
-   - Construct append-only audit trail logging input facts, evaluated rules, timestamps, and symbolic conclusions.
-   - Implement live re-evaluation upon manager override with non-destructive state retention and 15-character rationale enforcement.
-2. **Interactive Multi-Page Streamlit App (`app/`):**
-   - Multi-page UI (Catalog, Settlement, Manager Console, Treasury) showcasing real-time verdict inspection, audit trail viewer, and manager sign-off workflows.
+1. **Parallel Teammate Execution (via `docs/TEAM_PROMPTS.md`):**
+   - Teammate 1: Implement `agent/2.4-audit-log` (hash-chained audit trail).
+   - Teammate 2: Implement `parser/3.1-rule-parser` (rule-based NLP parser).
+   - Teammate 3: Implement `ui/6.1-dashboard` (Streamlit multi-page interface).
+2. **Lead Override Wiring (`agent/2.5-override-wiring`):**
+   - Connect bridge output directly to the proof contract, integrate manager override re-evaluation, and enforce 15-character rationale requirement.
+3. **Submission Finalization (`docs/7.3-readme-disclosure`):**
+   - Synthesize final README, architecture diagram, submission checklist, and record 3-minute video before deadline lock (Tue 20 Oct 2026, 8:30 PM IST).
+
 
 
