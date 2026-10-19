@@ -18,6 +18,7 @@
 | **Omega Framework** | **VERIFIED (LIVE GEMINI)** | Level B (Executed) | Docker image built, OpenAIAPI-to-Gemini connection verified, native tool-calling & MeTTa reduction confirmed live. |
 | **Financial & Domain Rules** | **TASK 1 VERIFIED** | Level B (Executed) | Synthetic registry `data/artworks.json`, independent test oracle, SC-01 to SC-09 scenarios, 31/31 tests passing. |
 | **Hyperon MeTTa Settlement** | **TASK 2 VERIFIED** | Level B (Executed) | Fiduciary settlement & rejection rules in `metta/royalties.metta`, native Atom API bridge, 42/42 tests passing. |
+| **Branch Architecture & Fixtures** | **STAGE 3 & 4 VERIFIED** | Level B (Executed) | Master branch guide, shared proof contract, real bridge proof fixtures, teammate prompts. |
 | **Audit Trail & Override** | **PENDING** | - | Append-only symbolic audit log & live re-evaluation with manager override. |
 | **Compliance UI** | **PENDING** | - | Streamlit dashboard for application review, "Why?" inspection, and overrides. |
 
@@ -26,20 +27,28 @@
 ## Git Branch Topology, Commits & Merges
 
 ### Active & Historical Branches
-- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at merge commit `d1ace45`.
-- **`spike/metta-omega-integration`** (Historical spike branch): Initial foundation branch where Hyperon MeTTa bridge (`40d3d73`) and Omega research were performed; merged into `origin/main` as PR #1 (`bba2383`).
-- **`data/0.3-synthetic-registry`** (Task 1 branch): Branched from clean `main`. Contains `data/artworks.json`, `tests/oracle.py`, scenario definitions `SC-01` to `SC-09`, and `.github/workflows/ci.yml` (commit `f289523`).
-- **`metta/1.3-settlement-rule`** (Task 2 active branch): Branched from `data/0.3-synthetic-registry`. Contains pure symbolic settlement rules in `metta/royalties.metta`, direct assertion tests `metta/tests/test_royalties.metta`, and native Hyperon Atom API bridge in `agent/bridge.py` (commit `8abd9f7`).
+- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at `b3dd353` after merging PR #2 and PR #3.
+- **`docs/7.0-branch-guide`** (Active branch): Contains `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `docs/TEAM_PROMPTS.md`, and canonical proof fixtures `tests/fixtures/proofs/*.json` (commit `a4b3906`).
+- **`metta/1.3-settlement-rule`** (Merged): Fiduciary settlement rules, direct Hyperon `assertEqual` tests, native Atom API bridge; merged into `main` via PR #3 (`b3dd353`).
+- **`data/0.3-synthetic-registry`** (Merged): Canonical synthetic registry `data/artworks.json`, test oracle, scenario definitions `SC-01` to `SC-09`, and `.github/workflows/ci.yml`; merged into `main` via PR #2 (`9d26b7f`).
+- **`spike/metta-omega-integration`** (Merged): Foundation branch where Hyperon MeTTa bridge and live Gemini Omega investigation were performed; merged into `origin/main` as PR #1 (`bba2383`).
 
 ### Complete Commit History & Merges Graph
 ```
-* 8abd9f7 (HEAD -> metta/1.3-settlement-rule) feat(metta): fiduciary settlement rules, test suite, and native atom bridge [1.3-settlement-rule]
-* f289523 (data/0.3-synthetic-registry) feat(data): synthetic artworks registry, test oracle, and scenario definitions [0.3-synthetic-registry]
-*   d1ace45 (main) merge: resolve documentation conflicts with origin/main
+* a4b3906 (HEAD -> docs/7.0-branch-guide, origin/docs/7.0-branch-guide) docs(guide): branch lifecycle guide, proof shape contract, fixtures, and teammate prompts [7.0-branch-guide]
+* b3dd353 (origin/main, main) Implement fiduciary settlement rules and update documentation (#3)
+*   9d26b7f Merge pull request #2 from kaniska-praba007/data/0.3-synthetic-registry
 |\  
-| * bba2383 (origin/main) Spike/metta omega integration (#1)
+| | * 41d6d84 docs: update PROGRESS.md with git topology and mandate sprint updates in AGENTS.md [1.3-settlement-rule]
+| | * 8abd9f7 feat(metta): fiduciary settlement rules, test suite, and native atom bridge [1.3-settlement-rule]
+| |/  
+| * f289523 feat(data): synthetic artworks registry, test oracle, and scenario definitions [0.3-synthetic-registry]
+|/  
+*   d1ace45 merge: resolve documentation conflicts with origin/main
+|\  
+| * bba2383 Spike/metta omega integration (#1)
 * | 8844461 docs: restore guardrails, add handoff and CI, log spike progress
-| | * 40d3d73 (spike/metta-omega-integration, origin/spike/metta-omega-integration) feat: verified Hyperon MeTTa adapter, tests, and Omega investigation notes
+| | * 40d3d73 feat: verified Hyperon MeTTa adapter, tests, and Omega investigation notes
 | |/  
 |/|   
 * | 3f7f24c docs: markdown skills for handling omega and metta
@@ -53,7 +62,9 @@
 
 ### Merges Done
 1. **PR #1 Merge (`bba2383`)**: Merged `spike/metta-omega-integration` into `origin/main`.
-2. **Main Conflict Resolution Merge (`d1ace45`)**: Resolved documentation merge divergence between remote `origin/main` (`bba2383`) and local verified docs (`8844461`) using Option A, preserving all verified runtime documentation and guardrails.
+2. **Main Conflict Resolution Merge (`d1ace45`)**: Resolved documentation divergence between remote `origin/main` (`bba2383`) and local verified docs (`8844461`) using Option A, preserving all verified runtime documentation and guardrails.
+3. **PR #2 Merge (`9d26b7f`)**: Merged `data/0.3-synthetic-registry` into `main` (synthetic catalog, test oracle, scenarios SC-01 to SC-09, CI workflow).
+4. **PR #3 Merge (`b3dd353`)**: Merged `metta/1.3-settlement-rule` into `main` (fiduciary settlement rules, direct assertion tests, native Atom API bridge).
 
 ---
 
