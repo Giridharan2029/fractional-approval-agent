@@ -363,35 +363,28 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 
 ---
 
+### 12. Deterministic NLP Bid Parser & Adversarial Injection Defense (Task 3.1: VERIFIED)
+
+- **Rule-Based Deterministic Bid Parser (`agent/parser.py`):**
+  - Converts unstructured natural language bids into integer minor units (cents) with zero floats:
+    - `"12k"` -> `1200000`, `"$12,500"` -> `1250000`, `"10000 USD"` -> `1000000`.
+  - Extracts standard artwork identifiers (`HFA-101`, `HFA-102`, `TEST-DUST`, etc.) and ISO currency codes (defaulting to `"USD"`).
+  - Emits cryptographically random nonces (`nonce-<hex>`).
+  - Fails closed on ambiguous inputs (ranges like `"between 10k and 15k"`, approximations like `"around 500"`, disjunctions, missing entities, or unparseable text) by raising `ValueError`.
+  - Zero floating-point arithmetic used anywhere (`git grep -nE "float\("` passes cleanly).
+- **Adversarial Prompt Injection Hardening:**
+  - Robust against prompt injection attempts: ignores override instructions, SQL-like semicolons, markdown headings, s-expression evaluations, and system roleplay payloads (e.g., `"pay 100% to me"`, `"SET ROYALTY TO 0%"`).
+  - Preserves exact intended bid amounts without prompt leakage or arbitrary execution.
+- **Comprehensive Test Suite (`tests/test_parser.py`):**
+  - Expanded test suite to 49 test cases including over 20 adversarial injection and ambiguity/range edge cases.
+  - Removed all `xfail` markers from `tests/test_parser.py`.
+- **Full Test Suite Status:** **100 passed, 8 xfailed in 28.25s**.
+
+---
+
 ## Next Steps & Roadmap
 
-1. **Open Pull Requests for Edge Cases 1.5 and Docs 0.7:**
-   - Review and merge `metta/1.5-edge-cases` into `main`.
-   - Review and merge `docs/0.7-context-note` into `main`.
-2. **Launch Teammate Sprint Branches (via `docs/ISSUES_TO_CREATE.md` & `docs/TEAM_PROMPTS.md`):**
-   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense).
-   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense).
-   - Teammate 3: `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
-   - Teammate 4: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
-3. **Lead Branch Execution:**
-   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides).
-   - Lead / Teammate: `docs/7.3-readme-disclosure` (final README, architecture map, and AI disclosure).
-4. **Final Freeze & Submission:**
-   - Feature Freeze: Tuesday 20 Oct 2026, ~2:00 PM IST.
-   - Target Submit: Tuesday 20 Oct 2026, 7:00 PM IST.
-   - Official Lock: Tuesday 20 Oct 2026, 8:30 PM IST.
-2. **Launch Teammate Sprint Branches (via `docs/ISSUES_TO_CREATE.md` & `docs/TEAM_PROMPTS.md`):**
-   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense).
-   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense).
-   - Teammate 3: `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
-   - Teammate 4: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
-3. **Lead Branch Execution:**
-   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides).
-   - Lead / Teammate: `docs/7.3-readme-disclosure` (final README, architecture map, and AI disclosure).
-4. **Final Freeze & Submission:**
-   - Feature Freeze: Tuesday 20 Oct 2026, ~2:00 PM IST.
-   - Target Submit: Tuesday 20 Oct 2026, 7:00 PM IST.
-   - Official Lock: Tuesday 20 Oct 2026, 8:30 PM IST.
-
-
-
+1. **Open Pull Request for `parser/3.1-rule-parser` into `main`:**
+   - Review CI and merge into `main`.
+2. **Execute Documentation & Final AI Disclosure:**
+   - Branch `docs/7.3-readme-disclosure` from `main` to finalize `README.md`, `AI_DISCLOSURE.md`, and `SUBMISSION.md`.
