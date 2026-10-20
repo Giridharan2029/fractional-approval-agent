@@ -20,6 +20,7 @@
 | **Hyperon MeTTa Settlement** | **TASK 2 VERIFIED** | Level B (Executed) | Fiduciary settlement & rejection rules in `metta/royalties.metta`, native Atom API bridge, 42/42 tests passing. |
 | **Branch Architecture & Fixtures** | **STAGE 3 & 4 VERIFIED** | Level B (Executed) | Master branch guide, shared proof contract, real bridge proof fixtures, teammate prompts. |
 | **Developer Scaffold & Stubs** | **SCAFFOLD 0.5 VERIFIED** | Level B (Executed) | Stubs, xfail suite (45 passed, 12 xfailed), 1-click setup, Streamlit proof viewer, onboarding & GitHub templates. |
+| **Edge Cases (fee, KES)** | **TASK 1.5 VERIFIED** | Level B (Executed) | SC-10 to SC-12, TEST-FEE and TEST-KES, 51 passed, 12 xfailed. |
 | **Audit Trail & Nonce Replay** | **STUB READY (xfail)** | Level B (Executed) | `agent/audit_log.py`, `tests/test_audit.py` ready for teammate on `agent/2.4-audit-log`. |
 | **NLP Rule Parser** | **STUB READY (xfail)** | Level B (Executed) | `agent/parser.py`, `tests/test_parser.py` ready for teammate on `parser/3.1-rule-parser`. |
 | **Simulated Ledger** | **STUB READY (xfail)** | Level B (Executed) | `agent/ledger.py`, `tests/test_ledger.py` ready for teammate on `agent/2.6-sim-ledger`. |
@@ -30,8 +31,8 @@
 ## Git Branch Topology, Commits & Merges
 
 ### Active & Historical Branches
-- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at `b3dd353` after merging PR #2 and PR #3.
-- **`docs/7.0-branch-guide`** (Active branch): Contains `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `docs/TEAM_PROMPTS.md`, and canonical proof fixtures `tests/fixtures/proofs/*.json` (commit `a4b3906`).
+- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at `b3dd353` after merging PR #2 and PR #3, later advanced by the bridge hardening, docs and scaffold merges.
+- **`docs/7.0-branch-guide`** (Merged): Contains `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `docs/TEAM_PROMPTS.md`, and canonical proof fixtures `tests/fixtures/proofs/*.json`.
 - **`metta/1.3-settlement-rule`** (Merged): Fiduciary settlement rules, direct Hyperon `assertEqual` tests, native Atom API bridge; merged into `main` via PR #3 (`b3dd353`).
 - **`data/0.3-synthetic-registry`** (Merged): Canonical synthetic registry `data/artworks.json`, test oracle, scenario definitions `SC-01` to `SC-09`, and `.github/workflows/ci.yml`; merged into `main` via PR #2 (`9d26b7f`).
 - **`spike/metta-omega-integration`** (Merged): Foundation branch where Hyperon MeTTa bridge and live Gemini Omega investigation were performed; merged into `origin/main` as PR #1 (`bba2383`).
@@ -49,7 +50,7 @@
 |/  
 *   d1ace45 merge: resolve documentation conflicts with origin/main
 |\  
-| * bba2383 Spike/metta omega integration (#1)
+| * bba2383 Spike/metta-omega-integration (#1)
 * | 8844461 docs: restore guardrails, add handoff and CI, log spike progress
 | | * 40d3d73 feat: verified Hyperon MeTTa adapter, tests, and Omega investigation notes
 | |/  
@@ -83,7 +84,7 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 - **Enforced Guardrails:**
   1. **Decimal Guard in MeTTa:** `grep -nE '[0-9]+\.[0-9]+' metta/*.metta` fails if any decimal literals or floats appear in symbolic code or comments.
   2. **Python Floating Point & Silent Error Guard:** `grep -rnE 'float\(|except:[[:space:]]*$|except Exception:[[:space:]]*pass' agent app` fails if floats or unhandled bare/pass exceptions are detected.
-  3. **Full Automated Test Suite:** `pytest -q` executes all 42 unit, integration, and MeTTa assertion tests. All tests must pass before merging.
+  3. **Full Automated Test Suite:** `pytest -q` executes all unit, integration, and MeTTa assertion tests. All tests must pass before merging.
 
 ---
 
@@ -361,6 +362,45 @@ The workflow file is committed at `.github/workflows/ci.yml`.
   - Audited test references across `docs/TEAM_PROMPTS.md` and `docs/BRANCHES.md`.
   - Confirmed naming alignment for `tests/test_audit.py`, `tests/test_parser.py`, and `tests/test_ledger.py`.
 
+### 12. Settlement Pipeline & Manager Override Wiring (Task 2.5: VERIFIED)
+- **Symbolic Pool Exposure in Hyperon Proof Atom (Commit 1):**
+  - Updated `metta/royalties.metta` to append `$pool` as the last child of `(proof ...)`, preserving all existing child positions.
+  - Updated `metta/tests/test_royalties.metta` full-tuple `assertEqual` assertions for SC-01, SC-03, SC-04, and SC-06.
+  - Added `pool_minor: int` to `SettlementProof` in `agent/bridge.py`, parsed directly from `children[11]` via the native Hyperon Atom API with fail-closed integer validation.
+  - Verified `scripts/generate_proof_fixtures.py` remained unchanged and fixtures regenerated identically with zero diff.
+  - Added assertions in `tests/test_bridge_settlement.py` confirming `pool_minor` matches the test oracle across SC-01..SC-06 and SC-10..SC-11.
+- **Bridge-Backed `settle()` Implementation in `agent/settle.py` (Commit 2):**
+  - Implemented `settle(request, offline=True, parser=None, audit=None, ledger=None)` adhering to fail-closed contract.
+  - Strict input validation rejecting booleans, floats, negative values, and non-integer amounts with `INVALID_AMOUNT`.
+  - Zero money math: `settle()` performs zero arithmetic operations (`+`, `-`, `*`, `/`, `//`) on monetary values, copying all numbers verbatim from the MeTTa bridge proof atom.
+  - Enforced manager override constraints: accepts exactly one of `royalty_bps` or `community_bps` with a justification rationale >= 15 characters; routes royalty overrides to `evaluate-resale-override-royalty` and community overrides to `evaluate-resale-override-community`.
+  - Rejections (such as `OVERRIDE_BELOW_FLOOR` and `OVERRIDE_NOT_ALLOWED`) originate purely from MeTTa symbolic reduction, not Python checks.
+- **Test Suite (`tests/test_settle.py`):**
+  - Validates `settle()` against canonical proof fixtures for SC-01 through SC-06 and SC-10 through SC-12.
+  - Covers invalid amount types, unknown artworks, multiple/missing override fields, short rationales, and MeTTa-driven override rejections.
+  - Implements AST source-scan test `test_no_money_math_in_settle_py` asserting zero binary arithmetic on financial fields in `agent/settle.py`.
+### 13. Audit Log, Ledger, Nonce & Offline Parser Wiring (Task 2.5b: VERIFIED)
+- **Component Wiring & Dependency Inversion (`agent/settle.py`):**
+  - Wired `settle(request, offline=True, parser=None, audit=None, ledger=None)` with lazy imports of default modules (`agent.audit_log`, `agent.ledger`, `agent.parser`) when not explicitly injected.
+  - Fail-closed handling for stubs or components raising `NotImplementedError` or exceptions, propagating error details in an explicit `diagnostics` field without silent swallowing.
+  - Enforced mandatory `nonce` parameter when audit component is active, failing closed with `INVALID_AMOUNT` if missing.
+- **Nonce Replay Defense (SC-07):**
+  - Intercepts duplicate nonces via `audit.seen_nonce(nonce)` before invoking the symbolic reasoning bridge.
+  - Halts execution with `status: "REJECTED"` and `reason_code: "DUPLICATE_NONCE"`, leaves the double-entry ledger untouched, and appends the rejection record to the audit log.
+- **Symbolic & Engine Fail-Closed Rejections (SC-08):**
+  - Catches unmapped assets or empty atom sets, returning `status: "REJECTED"` and `reason_code: "ENGINE_UNAVAILABLE"` with zero money movements and logging the event to the audit trail.
+- **Offline Natural Language Parsing (SC-09):**
+  - Accepts unstructured bid text (`request["text"]`) and routes through `parser.parse_request(text)`.
+  - Emits `status: "APPROVED"` with `producing_layer: "parser"` when valid, and fails closed with `status: "REJECTED"` and `reason_code: "LLM_MALFORMED_OUTPUT"` if parsing encounters ambiguity or malformed syntax.
+- **Strict Execution Order & Invariants:**
+  - For `APPROVED` transactions: commits to `audit.append(proof, nonce)` first, then posts balanced journals to `ledger.post(proof, nonce)`. If audit append raises, ledger posting is aborted and execution fails closed.
+  - For `REJECTED` transactions: commits rejection proof to `audit.append()`; double-entry ledger is never touched.
+  - Zero money math: `settle()` performs zero arithmetic operations on financial amounts, copying all values verbatim from the MeTTa bridge proof atom.
+- **Test Suite Expansion (`tests/test_settle.py`):**
+  - Added in-memory test doubles `FakeAuditLog`, `FakeLedger`, and `FakeParser` validating exact call ordering, fail-closed exception handling, and nonce requirements.
+  - Added `test_real_modules_end_to_end_xfail` testing live integration against real module imports, marked `xfail` until teammates' branches merge into `main`.
+- **Full Test Suite Status:** **78 passed, 13 xfailed in 13.02s**.
+
 ---
 
 ### 12. Deterministic NLP Bid Parser & Adversarial Injection Defense (Task 3.1: VERIFIED)
@@ -389,3 +429,17 @@ The workflow file is committed at `.github/workflows/ci.yml`.
    - Review CI and merge into `main`.
 2. **Execute Documentation & Final AI Disclosure:**
    - Branch `docs/7.3-readme-disclosure` from `main` to finalize `README.md`, `AI_DISCLOSURE.md`, and `SUBMISSION.md`.
+## Next Steps & Roadmap
+
+1. **Open Pull Request for Settle Wiring 2.5b:**
+   - Merge `agent/2.5b-settle-wiring` into `main` after review.
+2. **Launch Teammate Sprint Branches (via `docs/ISSUES_TO_CREATE.md` & `docs/TEAM_PROMPTS.md`):**
+   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense), then `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
+   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense), then `docs/7.3-readme-disclosure` (final README and AI disclosure).
+   - Teammate 3: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
+3. **Lead Branch Execution:**
+   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides), merges, and video.
+4. **Final Freeze & Submission:**
+   - Feature Freeze: Tuesday 20 Oct 2026, ~2:00 PM IST.
+   - Target Submit: Tuesday 20 Oct 2026, 7:00 PM IST.
+   - Official Lock: Tuesday 20 Oct 2026, 8:30 PM IST.
