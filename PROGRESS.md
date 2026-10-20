@@ -20,6 +20,7 @@
 | **Hyperon MeTTa Settlement** | **TASK 2 VERIFIED** | Level B (Executed) | Fiduciary settlement & rejection rules in `metta/royalties.metta`, native Atom API bridge, 42/42 tests passing. |
 | **Branch Architecture & Fixtures** | **STAGE 3 & 4 VERIFIED** | Level B (Executed) | Master branch guide, shared proof contract, real bridge proof fixtures, teammate prompts. |
 | **Developer Scaffold & Stubs** | **SCAFFOLD 0.5 VERIFIED** | Level B (Executed) | Stubs, xfail suite (45 passed, 12 xfailed), 1-click setup, Streamlit proof viewer, onboarding & GitHub templates. |
+| **Edge Cases (fee, KES)** | **TASK 1.5 VERIFIED** | Level B (Executed) | SC-10 to SC-12, TEST-FEE and TEST-KES, 51 passed, 12 xfailed. |
 | **Audit Trail & Nonce Replay** | **STUB READY (xfail)** | Level B (Executed) | `agent/audit_log.py`, `tests/test_audit.py` ready for teammate on `agent/2.4-audit-log`. |
 | **NLP Rule Parser** | **STUB READY (xfail)** | Level B (Executed) | `agent/parser.py`, `tests/test_parser.py` ready for teammate on `parser/3.1-rule-parser`. |
 | **Simulated Ledger** | **STUB READY (xfail)** | Level B (Executed) | `agent/ledger.py`, `tests/test_ledger.py` ready for teammate on `agent/2.6-sim-ledger`. |
@@ -30,8 +31,8 @@
 ## Git Branch Topology, Commits & Merges
 
 ### Active & Historical Branches
-- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at `b3dd353` after merging PR #2 and PR #3.
-- **`docs/7.0-branch-guide`** (Active branch): Contains `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `docs/TEAM_PROMPTS.md`, and canonical proof fixtures `tests/fixtures/proofs/*.json` (commit `a4b3906`).
+- **`main`** (Base branch): Stable mainline tracking official deliverables. Head at `b3dd353` after merging PR #2 and PR #3, later advanced by the bridge hardening, docs and scaffold merges.
+- **`docs/7.0-branch-guide`** (Merged): Contains `docs/BRANCHES.md`, `docs/PROOF_SHAPE.md`, `docs/TEAM_PROMPTS.md`, and canonical proof fixtures `tests/fixtures/proofs/*.json`.
 - **`metta/1.3-settlement-rule`** (Merged): Fiduciary settlement rules, direct Hyperon `assertEqual` tests, native Atom API bridge; merged into `main` via PR #3 (`b3dd353`).
 - **`data/0.3-synthetic-registry`** (Merged): Canonical synthetic registry `data/artworks.json`, test oracle, scenario definitions `SC-01` to `SC-09`, and `.github/workflows/ci.yml`; merged into `main` via PR #2 (`9d26b7f`).
 - **`spike/metta-omega-integration`** (Merged): Foundation branch where Hyperon MeTTa bridge and live Gemini Omega investigation were performed; merged into `origin/main` as PR #1 (`bba2383`).
@@ -49,7 +50,7 @@
 |/  
 *   d1ace45 merge: resolve documentation conflicts with origin/main
 |\  
-| * bba2383 Spike/metta omega integration (#1)
+| * bba2383 Spike/metta-omega-integration (#1)
 * | 8844461 docs: restore guardrails, add handoff and CI, log spike progress
 | | * 40d3d73 feat: verified Hyperon MeTTa adapter, tests, and Omega investigation notes
 | |/  
@@ -83,7 +84,7 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 - **Enforced Guardrails:**
   1. **Decimal Guard in MeTTa:** `grep -nE '[0-9]+\.[0-9]+' metta/*.metta` fails if any decimal literals or floats appear in symbolic code or comments.
   2. **Python Floating Point & Silent Error Guard:** `grep -rnE 'float\(|except:[[:space:]]*$|except Exception:[[:space:]]*pass' agent app` fails if floats or unhandled bare/pass exceptions are detected.
-  3. **Full Automated Test Suite:** `pytest -q` executes all 42 unit, integration, and MeTTa assertion tests. All tests must pass before merging.
+  3. **Full Automated Test Suite:** `pytest -q` executes all unit, integration, and MeTTa assertion tests. All tests must pass before merging.
 
 ---
 
@@ -369,29 +370,12 @@ The workflow file is committed at `.github/workflows/ci.yml`.
    - Review and merge `metta/1.5-edge-cases` into `main`.
    - Review and merge `docs/0.7-context-note` into `main`.
 2. **Launch Teammate Sprint Branches (via `docs/ISSUES_TO_CREATE.md` & `docs/TEAM_PROMPTS.md`):**
-   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense).
-   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense).
-   - Teammate 3: `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
-   - Teammate 4: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
+   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense), then `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
+   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense), then `docs/7.3-readme-disclosure` (final README and AI disclosure).
+   - Teammate 3: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
 3. **Lead Branch Execution:**
-   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides).
-   - Lead / Teammate: `docs/7.3-readme-disclosure` (final README, architecture map, and AI disclosure).
+   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides), merges, and video.
 4. **Final Freeze & Submission:**
    - Feature Freeze: Tuesday 20 Oct 2026, ~2:00 PM IST.
    - Target Submit: Tuesday 20 Oct 2026, 7:00 PM IST.
    - Official Lock: Tuesday 20 Oct 2026, 8:30 PM IST.
-2. **Launch Teammate Sprint Branches (via `docs/ISSUES_TO_CREATE.md` & `docs/TEAM_PROMPTS.md`):**
-   - Teammate 1: `agent/2.4-audit-log` (hash-chained audit log & nonce replay defense).
-   - Teammate 2: `parser/3.1-rule-parser` (rule-based NLP parser & prompt injection defense).
-   - Teammate 3: `agent/2.6-sim-ledger` (simulated double-entry ledger in integer cents).
-   - Teammate 4: `ui/6.1-dashboard` (Streamlit multi-page compliance interface).
-3. **Lead Branch Execution:**
-   - Lead: `agent/2.5-override-wiring` (connect bridge output to proof contract and live manager overrides).
-   - Lead / Teammate: `docs/7.3-readme-disclosure` (final README, architecture map, and AI disclosure).
-4. **Final Freeze & Submission:**
-   - Feature Freeze: Tuesday 20 Oct 2026, ~2:00 PM IST.
-   - Target Submit: Tuesday 20 Oct 2026, 7:00 PM IST.
-   - Official Lock: Tuesday 20 Oct 2026, 8:30 PM IST.
-
-
-
