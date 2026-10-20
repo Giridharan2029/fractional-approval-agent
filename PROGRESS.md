@@ -378,7 +378,8 @@ The workflow file is committed at `.github/workflows/ci.yml`.
 - **Comprehensive Test Suite (`tests/test_parser.py`):**
   - Expanded test suite to 49 test cases including over 20 adversarial injection and ambiguity/range edge cases.
   - Removed all `xfail` markers from `tests/test_parser.py`.
-- **Full Test Suite Status:** **100 passed, 8 xfailed in 28.25s**.
+  - thanks to kanishk maharaja
+  - **Full Test Suite Status:** **100 passed, 8 xfailed in 28.25s**.
 
 ---
 
